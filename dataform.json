@@ -1,0 +1,8 @@
+{
+  "defaultSchema": "dataform",
+  "assertionSchema": "dataform_assertions",
+  "warehouse": "bigquery",
+  "defaultDatabase": "data-night-2023-bigquery",
+  "defaultLocation": "EU"
+}
+    
