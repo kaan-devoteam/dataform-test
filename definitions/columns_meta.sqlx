@@ -1,0 +1,27 @@
+config {
+    type: "table",
+    schema: "ML_training",
+    name: "training_set" 
+    }
+
+js { function convert_null(field) {
+    return `
+    CASE ${field}
+        WHEN "NA" THEN NULL
+        ELSE ${field}
+        END AS ${field}
+    `;
+}
+}
+
+with column_names AS (
+        select array_agg(column_name) as column_name,
+        data_type
+        from `data-night-2023-bigquery.ML_training.INFORMATION_SCHEMA.COLUMNS`
+        where table_name = 'sales-all'
+        GROUP BY data_type
+        )
+    SELECT column_name
+    FROM column_names
+    WHERE data_type = "STRING"
+    )
