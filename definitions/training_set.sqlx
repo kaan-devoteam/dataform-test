@@ -1,5 +1,5 @@
 config {
-    type: "view",
+    type: "table",
     schema: "ML_house_prices",
     name: "training_set" 
     }

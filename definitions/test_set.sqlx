@@ -18,9 +18,9 @@ js { function convert_null(field) {
 WITH
     testing_joint as (
         SELECT * 
-        FROM ${ref("testing_data", "houses")} houses
+        FROM ${ref("test_data", "houses")} houses
         LEFT JOIN
-        ${ref( "testing_data", "sales-all")} sales
+        ${ref( "test_data", "sales-all")} sales
         ON houses.id = CAST(sales.HouseID as INT)
 
     ),
