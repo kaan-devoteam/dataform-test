@@ -1,5 +1,5 @@
 config {
-    type: "table",
+    type: "view",
     schema: "ML_house_prices",
     name: "training_set" 
     }
@@ -11,43 +11,42 @@ js { function convert_null(field) {
         ELSE ${field}
         END AS ${field}
     `;
-}}
+}
+}
+-- Use the ref() function to manage dependencies.
+-- Learn more about ref() and other built in functions here: https://cloud.google.com/dataform/docs/dataform-core
+WITH
+    training_joint as (
+        SELECT * 
+        FROM ${ref("training_data", "houses")} houses
+        LEFT JOIN
+        ${ref( "training_data", "sales-all")} sales
+        ON houses.id = CAST(sales.HouseID as INT)
 
-js { function convert_nulls(fields, reference) {
-    var stringArray = fields;
-    var arrayLength = stringArray.length;
-    var queryOut = "SELECT ";
-    for (var i = 0; i<arrayLength; i++) {
-        queryField = `
-            CASE ${stringArray[i]}
-            WHEN "NA" THEN NULL
-            ELSE ${stringArray[i]}
-            END AS ${stringArray[i]}
-        `;
-        queryOut.concat(queryField, ",")
-    };
-    queryOut.concat('FROM ${reference}')
-}}
-
-WITH 
-    meta_columns AS (
-        select array_agg(column_name) as column_name,
-            data_type
-        from `data-night-2023-bigquery.ML_training.INFORMATION_SCHEMA.COLUMNS`
-        where table_name = 'joint'
-        group by data_type
-    ),
-    string_columns AS (
-        select
-        column_name as column_name
-        from meta_columns
-        where data_type = "STRING"
     ),
     training_clean as (
-        select
-        ${ convert_nulls('column_name', '${ref( "ML_training", "sales-all")}') }
-        --column_name
-        from string_columns
+        SELECT 
+            id as houseID,
+            ${ convert_null("LotFrontage") },
+            ${ convert_null("MasVnrType") },
+            ${ convert_null("MasVnrArea") },
+            ${ convert_null("BsmtQual") },
+            ${ convert_null("BsmtCond") },
+            ${ convert_null("BsmtExposure") },
+            ${ convert_null("BsmtFinType1") },
+            ${ convert_null("BsmtFinType2") },
+            ${ convert_null("Electrical") },
+            ${ convert_null("FireplaceQu") },
+            ${ convert_null("GarageType") },
+            ${ convert_null("GarageYrBlt") },
+            ${ convert_null("GarageFinish") },
+            ${ convert_null("GarageQual") },
+            ${ convert_null("GarageCond") },
+            ${ convert_null("PoolQC") },
+            ${ convert_null("Fence") },
+            ${ convert_null("MiscFeature") },
+            ${ convert_null("Alley") },
+            * EXCEPT(LotFrontage, MasVnrType, MasVnrArea, BsmtQual, BsmtCond, BsmtExposure, BsmtFinType1, BsmtFinType2, Electrical, FireplaceQu, GarageType, GarageYrBlt, GarageFinish, GarageQual, GarageCond, PoolQC, Fence, MiscFeature, Alley, houseID)
+        FROM training_joint
     )
-
 SELECT * FROM training_clean

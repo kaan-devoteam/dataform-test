@@ -1,6 +1,6 @@
 config {
     type: "view",
-    schema: "ML_testing",
+    schema: "testing_data",
     name: "sales-all"
 }
 

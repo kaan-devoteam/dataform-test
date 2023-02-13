@@ -1,0 +1,53 @@
+config {
+    type: "table",
+    schema: "ML_house_prices",
+    name: "temp_training_set" 
+    }
+
+js { function convert_null(field) {
+    return `
+    CASE ${field}
+        WHEN "NA" THEN NULL
+        ELSE ${field}
+        END AS ${field}
+    `;
+}}
+
+js { function convert_nulls(fields, reference) {
+    var stringArray = fields;
+    var arrayLength = stringArray.length;
+    var queryOut = "SELECT ";
+    for (var i = 0; i<arrayLength; i++) {
+        queryField = `
+            CASE ${stringArray[i]}
+            WHEN "NA" THEN NULL
+            ELSE ${stringArray[i]}
+            END AS ${stringArray[i]}
+        `;
+        queryOut.concat(queryField, ",")
+    };
+    queryOut.concat('FROM ${reference}')
+}}
+
+WITH 
+    meta_columns AS (
+        select array_agg(column_name) as column_name,
+            data_type
+        from `data-night-2023-bigquery.ML_training.INFORMATION_SCHEMA.COLUMNS`
+        where table_name = 'joint'
+        group by data_type
+    ),
+    string_columns AS (
+        select
+        column_name as column_name
+        from meta_columns
+        where data_type = "STRING"
+    ),
+    training_clean as (
+        select
+        ${ convert_nulls('column_name', '${ref( "ML_training", "sales-all")}') }
+        --column_name
+        from string_columns
+    )
+
+SELECT * FROM training_clean
