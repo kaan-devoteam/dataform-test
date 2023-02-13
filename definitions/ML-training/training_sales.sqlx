@@ -1,0 +1,48 @@
+config {
+    type: "view",
+    schema: "training_data",
+    name: "sales-all"
+}
+
+SELECT *
+FROM ${ref("training_data", "sales-COD")}
+
+UNION ALL
+
+SELECT *
+FROM ${ref("training_data", "sales-Con")}
+
+UNION ALL
+
+SELECT *
+FROM ${ref("training_data", "sales-ConLD")}
+
+UNION ALL
+
+SELECT *
+FROM ${ref("training_data", "sales-ConLI")}
+
+UNION ALL
+
+SELECT *
+FROM ${ref("training_data", "sales-CWD")}
+
+UNION ALL
+
+SELECT *
+FROM ${ref("training_data", "sales-ConLw")}
+
+UNION ALL
+
+SELECT *
+FROM ${ref("training_data", "sales-New")}
+
+UNION ALL
+
+SELECT *
+FROM ${ref("training_data", "sales-Oth")}
+
+UNION ALL
+
+SELECT *
+FROM ${ref("training_data", "sales-WD")}

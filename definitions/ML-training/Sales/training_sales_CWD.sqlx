@@ -1,0 +1,6 @@
+-- Declare the data source from bigquery (see the warehouse config in dataform.json)
+config {
+  type: "declaration",
+  schema: "training_data",
+  name: "sales-CWD"
+}
