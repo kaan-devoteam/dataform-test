@@ -1,0 +1,15 @@
+config {
+    type: "table",
+    schema: "ML_house_prices",
+    name: "training_set"
+}
+/*
+DECLARE validation_size INT64 DEFAULT 60;
+DECLARE dataset_size INT64 DEFAULT (
+  SELECT count(*)
+  FROM ${ref("training_data", "house-sales-all")}
+  ); 
+*/
+SELECT *
+FROM ${ref("training_data", "house-sales-all")}
+WHERE houseID <= 1400 --dataset_size-validation_size
